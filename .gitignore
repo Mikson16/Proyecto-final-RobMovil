@@ -1,0 +1,6 @@
+# Archivos de vscode
+.vscode/
+# Ignorear build install log
+build/
+install/
+log/
