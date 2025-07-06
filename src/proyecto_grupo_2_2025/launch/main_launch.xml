@@ -1,0 +1,11 @@
+<launch>
+	<node pkg="very_simple_robot_simulator" name="kobuki_simulator" exec="kobuki_simulator.py" output="screen" />
+	
+	<node pkg="very_simple_robot_simulator" name="lidar_simulator" exec="lidar_simulator">
+		<param name="param" effective_hfov=181.0 view_depth=20.0/>
+	</node>
+
+	 <node pkg="very_simple_robot_simulator" exec="world_state_gui.py" name="world_state_gui" output="screen" >
+ 		<param name="map_file" value="$(find-pkg-share proyecto_grupo_2_2025)/mapa_bodega.yaml"/>
+	</node>
+</launch>
