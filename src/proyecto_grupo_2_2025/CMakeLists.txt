@@ -11,6 +11,13 @@ find_package(ament_cmake REQUIRED)
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 
+# Install python modeles
+ament_python_install_package(${PROJECT_NAME})
+
+# Install launch files
+# Los archivos map estan en la carpeta map
+install(DIRECTORY launch map DESTINATION share/${PROJECT_NAME}/)
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   # the following line skips the linter which checks for copyrights
