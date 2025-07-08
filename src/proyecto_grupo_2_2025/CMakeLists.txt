@@ -16,7 +16,7 @@ ament_python_install_package(${PROJECT_NAME})
 
 # Install launch files
 # Los archivos map estan en la carpeta map
-install(DIRECTORY launch map DESTINATION share/${PROJECT_NAME}/)
+install(DIRECTORY launch map params DESTINATION share/${PROJECT_NAME}/)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
