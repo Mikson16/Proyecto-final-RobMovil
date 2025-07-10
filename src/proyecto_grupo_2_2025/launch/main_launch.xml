@@ -1,53 +1,49 @@
 <launch>
-	<!-- Robot simulacion -->
-	<node pkg="very_simple_robot_simulator" name="kobuki_simulator" exec="kobuki_simulator.py" output="screen" />
+  <!-- Robot simulación -->
+  <node pkg="very_simple_robot_simulator" name="kobuki_simulator" exec="kobuki_simulator.py" output="screen" />
 
-	<!-- Lidar "lanzadores" -->
-	<node pkg="very_simple_robot_simulator" name="lidar_simulator" exec="lidar_simulator">
-		<param name="effective_hfov" value="181.0"/>
-		<param name="view_depth" value="20.0"/>
-	</node> 
-	
-	<!-- GUI: Interfaz grafica simulacion -->
-	<node pkg="very_simple_robot_simulator" exec="world_state_gui.py" name="world_state_gui" output="screen" >
- 		<param name="map_file" value="$(find-pkg-share proyecto_grupo_2_2025)/map/mapa_bodega.yaml"/>
-	</node> 
+    <!-- Lidar -->
+    <node pkg="very_simple_robot_simulator" name="lidar_simulator" exec="lidar_simulator">
+        <param name="effective_hfov" value="181.0"/>
+    <param name="view_depth" value="20.0"/>
+      </node>
 
-	<!-- <node pkg="very_simple_robot_simulator" exec="world_state_gui.py" name="world_state_gui" output="screen" >
- 		<param name="map_file" value="$(find-pkg-share proyecto_grupo_2_2025)/map/mapa_bodega.yaml"/>
-	</node> -->
+        <!-- GUI con mapa -->
+        <node pkg="very_simple_robot_simulator" exec="world_state_gui.py" name="world_state_gui" output="screen">
+    <param name="map_file" value="$(find-pkg-share proyecto_grupo_2_2025)/map/mapa_bodega.yaml"/>
+      </node>
 
-	<!-- Nodo de transformacion de sistema de coordenadas -->
-	<node pkg="tf2_ros" exec="static_transform_publisher" name="base_link_to_laser" args="--x 0.0 --y 0.0 --z 0.0 --roll 0.0 --pitch 0.0 --yaw 0.0 --frame-id base_link --child-frame-id laser" />
-	
-	<!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="world_map_to_odom" args="world_map odom" /> -->
+        <!-- TF: base_link → laser -->
+        <node pkg="tf2_ros" exec="static_transform_publisher" name="base_link_to_laser"
+        args="0 0 0 0 0 0 base_link laser" />
 
-	<!-- Realizamos el cambio de sis. coord. de map a odom   -->
-	<node pkg="tf2_ros" exec="static_transform_publisher" name="map_to_odom" args="0 0 0 0 0 0 world_map odom" />
-	<!-- Cuando definimos arriba world_map, podemos registrar el topico en el fixed frame -->
+  <!-- TF: map → odom -->
+  <node pkg="tf2_ros" exec="static_transform_publisher" name="map_to_odom"
+          args="0 0 0 0 0 0 world_map odom" />
 
+    <!-- Nodo de mapa estático (remapea world_map → map) -->
+    <node pkg="nav2_map_server" exec="map_server" name="map_server">
+        <param name="yaml_filename" value="$(find-pkg-share proyecto_grupo_2_2025)/map/mapa_bodega.yaml" />
+    <remap from="map" to="world_map" />
+      </node>
 
-	<!-- Rviz -->
-	<node pkg="rviz2" exec="rviz2" name="rviz" output="screen" />
+        <!-- AMCL con parámetros -->
+        <node pkg="nav2_amcl" exec="amcl" name="amcl">
+    <param name="global_frame_id" value="map"/>
+        <param name="base_frame_id" value="base_link"/>
+    <param name="odom_frame_id" value="odom"/>
+        <param name="robot_model_type" value="nav2_amcl::DifferentialMotionModel"/>
+    <param name="use_map_topic" value="true"/>
+        <param name="map_topic" value="map"/> <!-- Ahora se usa el topic correcto -->
+    <param name="laser_max_beams" value="181"/>
+        <param name="min_particles" value="250"/>
+  </node>
 
-	<!-- Nodo para levantar el AMCL -->
-	<node pkg="nav2_amcl" exec="amcl" name="amcl" />
+    <!-- RViz -->
+    <node pkg="rviz2" exec="rviz2" name="rviz" output="screen" />
 
-	<!-- AMCL parametros  -->
-	 <node pkg="nav2_amcl" exec="amcl" name="amcl">
-		<!-- Para solucionar la deteccion del mapa necesitamos cambiar al topico map como siste de refe fijo -->
-		<param name="global_frame_id" value="map"/>
-		<param name="base_frame_id" value="base_link"/>
-		<param name="odom frame id" value="odom"/>
-		<param name="robot_model_type" value="nav2_amcl::DifferentialMotionModel"/>
-		<param name="use_map_topic" value="true"/>
-		<param name="map_topic" value="world_map"/>
-		<param name="laser_max_beams" value="181"/>
-		<param name="min_particles" value="250"/>
-	</node> 
-
-	<!-- Navigation -->
-	<!-- <include file="$(find-pkg-share nav2_bringup)/launch/navigation_launch.py" >
-	<arg name="params_file" value="$(find-pkg-share proyecto_grupo_2_2025)/params/nav2_params.yaml" />
-	</include> -->
-</launch>
+      <!-- Stack de navegación -->
+      <include file="$(find-pkg-share nav2_bringup)/launch/navigation_launch.py">
+          <arg name="params_file" value="$(find-pkg-share proyecto_grupo_2_2025)/params/nav2_params.yaml" />
+    </include>
+    </launch>
