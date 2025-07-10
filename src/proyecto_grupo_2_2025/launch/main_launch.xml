@@ -23,14 +23,20 @@
 	<!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="world_map_to_odom" args="world_map odom" /> -->
 
 	<!-- Realizamos el cambio de sis. coord. de map a odom   -->
-	<node pkg="tf2_ros" exec="static_transform_publisher" name="map_to_odom" args="0 0 0 0 0 0 map odom" />
+	<node pkg="tf2_ros" exec="static_transform_publisher" name="map_to_odom" args="0 0 0 0 0 0 world_map odom" />
+	<!-- Cuando definimos arriba world_map, podemos registrar el topico en el fixed frame -->
+
 
 	<!-- Rviz -->
 	<node pkg="rviz2" exec="rviz2" name="rviz" output="screen" />
 
-	<!-- AMCL -->
-	<!-- <node pkg="nav2_amcl" exec="amcl" name="amcl">
-		<param name="global_frame_id" value="world_map"/>
+	<!-- Nodo para levantar el AMCL -->
+	<node pkg="nav2_amcl" exec="amcl" name="amcl" />
+
+	<!-- AMCL parametros  -->
+	 <node pkg="nav2_amcl" exec="amcl" name="amcl">
+		<!-- Para solucionar la deteccion del mapa necesitamos cambiar al topico map como siste de refe fijo -->
+		<param name="global_frame_id" value="map"/>
 		<param name="base_frame_id" value="base_link"/>
 		<param name="odom frame id" value="odom"/>
 		<param name="robot_model_type" value="nav2_amcl::DifferentialMotionModel"/>
@@ -38,7 +44,7 @@
 		<param name="map_topic" value="world_map"/>
 		<param name="laser_max_beams" value="181"/>
 		<param name="min_particles" value="250"/>
-	</node> -->
+	</node> 
 
 	<!-- Navigation -->
 	<!-- <include file="$(find-pkg-share nav2_bringup)/launch/navigation_launch.py" >
