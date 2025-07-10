@@ -40,6 +40,9 @@
 		<param name="map_topic" value="world_map"/>
 		<param name="laser_max_beams" value="181"/>
 		<param name="min_particles" value="250"/>
+		<!-- Nuevos -->
+		<param name="tf_broadcast" value="true"/> 
+		<param name="use_sim_time" value="false"/>
 	</node>
 
 	<!-- Navigation -->
