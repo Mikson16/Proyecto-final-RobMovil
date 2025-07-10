@@ -18,8 +18,15 @@
 	</node> -->
 
 	<!-- Nodo de transformacion de sistema de coordenadas -->
-	<node pkg="tf2_ros" exec="static_transform_publisher" name="base_link_to_laser" args="--x 0.0 --y 0.0 --z 0.0 --roll 0.0 --pitch 0.0 --yaw 0.0 --frame-id base_link --child-frame-id laser" />
+	<!-- Transformación entre base_link y laser -->
+	<node pkg="tf2_ros" exec="static_transform_publisher" name="base_link_to_laser"
+      args="0 0 0 0 0 0 base_link laser" />
 
+	<!-- Transformación entre world_map y odom (¡la que faltaba!) -->
+	<node pkg="tf2_ros" exec="static_transform_publisher" name="world_map_to_odom"
+      args="0 0 0 0 0 0 world_map odom" />
+
+	
 	<!-- Rviz -->
 	<node pkg="rviz2" exec="rviz2" name="rviz" output="screen" />
 
@@ -27,7 +34,7 @@
 	<node pkg="nav2_amcl" exec="amcl" name="amcl">
 		<param name="global_frame_id" value="world_map"/>
 		<param name="base_frame_id" value="base_link"/>
-		<param name="odom frame id" value="odom"/>
+		<param name="odom_frame_id" value="odom"/>
 		<param name="robot_model_type" value="nav2_amcl::DifferentialMotionModel"/>
 		<param name="use_map_topic" value="true"/>
 		<param name="map_topic" value="world_map"/>
