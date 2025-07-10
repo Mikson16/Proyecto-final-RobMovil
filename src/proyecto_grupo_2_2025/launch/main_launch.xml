@@ -19,6 +19,11 @@
 
 	<!-- Nodo de transformacion de sistema de coordenadas -->
 	<node pkg="tf2_ros" exec="static_transform_publisher" name="base_link_to_laser" args="--x 0.0 --y 0.0 --z 0.0 --roll 0.0 --pitch 0.0 --yaw 0.0 --frame-id base_link --child-frame-id laser" />
+	
+	<!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="world_map_to_odom" args="world_map odom" /> -->
+
+	<!-- Realizamos el cambio de sis. coord. de map a odom   -->
+	<node pkg="tf2_ros" exec="static_transform_publisher" name="map_to_odom" args="0 0 0 0 0 0 map odom" />
 
 	<!-- Rviz -->
 	<node pkg="rviz2" exec="rviz2" name="rviz" output="screen" />
